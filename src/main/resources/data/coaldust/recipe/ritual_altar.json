@@ -1,4 +1,0 @@
-{ "type": "minecraft:crafting_shaped", "category": "misc",
-  "pattern": [ "CGC", "BAB", "BBB" ],
-  "key": { "C": { "item": "minecraft:candle" }, "G": { "item": "minecraft:gold_ingot" }, "A": { "item": "minecraft:amethyst_shard" }, "B": { "item": "minecraft:polished_blackstone_bricks" } },
-  "result": { "id": "coaldust:ritual_altar", "count": 1 } }

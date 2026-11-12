@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "coaldust:block/ancient_log_top",
-    "side": "coaldust:block/ancient_log"
-  }
-}

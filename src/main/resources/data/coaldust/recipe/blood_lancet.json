@@ -1,4 +1,0 @@
-{ "type": "minecraft:crafting_shaped", "category": "equipment",
-  "pattern": [ "  I", " I ", "S  " ],
-  "key": { "I": { "item": "minecraft:iron_nugget" }, "S": { "item": "minecraft:stick" } },
-  "result": { "id": "coaldust:blood_lancet", "count": 1 } }
