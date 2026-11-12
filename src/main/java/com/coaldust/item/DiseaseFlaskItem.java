@@ -65,28 +65,16 @@ extends Item {
         return 32;
     }
 
-    /*
-     * Unable to fully structure code
-     */
+    
     public ItemStack finishUsingItem(ItemStack var1_1, Level var2_2, LivingEntity var3_3) {
-        if (var3_3 instanceof ServerPlayer) {
-            var4_4 = (ServerPlayer)var3_3;
+               if (var3_3 instanceof ServerPlayer var4_4) {
             if (!this.catalyst) {
                 this.disease.infect(var4_4);
             } else if (!this.disease.advance(var4_4)) {
                 var4_4.displayClientMessage((Component)Component.translatable((String)"message.coaldust.catalyst.max"), true);
             }
         }
-        if (!(var3_3 instanceof Player)) ** GOTO lbl-1000
-        var5_6 = (Player)var3_3;
-        if (var5_6.getAbilities().instabuild) {
-            v0 = true;
-        } else lbl-1000:
-        // 2 sources
-
-        {
-            v0 = var4_5 = false;
-        }
+        boolean var4_5 = var3_3 instanceof Player player && player.getAbilities().instabuild;
         if (var4_5) {
             return var1_1;
         }
@@ -94,9 +82,8 @@ extends Item {
         if (var1_1.isEmpty()) {
             return new ItemStack((ItemLike)Items.GLASS_BOTTLE);
         }
-        if (var3_3 instanceof Player) {
-            var5_6 = (Player)var3_3;
-            var6_7 = new ItemStack((ItemLike)Items.GLASS_BOTTLE);
+        if (var3_3 instanceof Player var5_6) {
+            ItemStack var6_7 = new ItemStack((ItemLike)Items.GLASS_BOTTLE);
             if (!var5_6.getInventory().add(var6_7)) {
                 var5_6.drop(var6_7, false);
             }
