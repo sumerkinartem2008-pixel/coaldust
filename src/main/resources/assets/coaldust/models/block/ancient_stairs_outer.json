@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "coaldust:block/ancient_planks",
+    "top": "coaldust:block/ancient_planks",
+    "side": "coaldust:block/ancient_planks"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "coaldust:ancient_log",
+    "coaldust:ancient_planks",
+    "coaldust:ancient_slab",
+    "coaldust:ancient_stairs"
+  ]
+}

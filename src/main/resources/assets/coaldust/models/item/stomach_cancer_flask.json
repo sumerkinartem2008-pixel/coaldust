@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "coaldust:item/stomach_cancer_flask"
+  }
+}

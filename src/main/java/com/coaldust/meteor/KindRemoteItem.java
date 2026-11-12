@@ -1,0 +1,141 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.mojang.brigadier.arguments.ArgumentType
+ *  com.mojang.brigadier.arguments.IntegerArgumentType
+ *  com.mojang.brigadier.builder.LiteralArgumentBuilder
+ *  com.mojang.brigadier.context.CommandContext
+ *  net.minecraft.ChatFormatting
+ *  net.minecraft.commands.CommandSourceStack
+ *  net.minecraft.commands.Commands
+ *  net.minecraft.core.BlockPos
+ *  net.minecraft.core.component.DataComponents
+ *  net.minecraft.nbt.CompoundTag
+ *  net.minecraft.network.chat.Component
+ *  net.minecraft.server.level.ServerLevel
+ *  net.minecraft.server.level.ServerPlayer
+ *  net.minecraft.world.InteractionHand
+ *  net.minecraft.world.InteractionResultHolder
+ *  net.minecraft.world.entity.player.Player
+ *  net.minecraft.world.item.Item
+ *  net.minecraft.world.item.Item$Properties
+ *  net.minecraft.world.item.Item$TooltipContext
+ *  net.minecraft.world.item.ItemStack
+ *  net.minecraft.world.item.TooltipFlag
+ *  net.minecraft.world.item.component.CustomData
+ *  net.minecraft.world.level.Level
+ *  net.minecraft.world.phys.BlockHitResult
+ *  net.minecraft.world.phys.HitResult$Type
+ *  net.neoforged.neoforge.event.RegisterCommandsEvent
+ */
+package com.coaldust.meteor;
+
+import com.coaldust.client.KindRemoteScreen;
+import com.coaldust.meteor.MeteorKind;
+import com.coaldust.meteor.MeteorManager;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+
+public class KindRemoteItem
+extends Item {
+    private static final String KEY = "meteor_kind";
+    public static final String COMMAND = "coaldust_remote_kind";
+
+    public KindRemoteItem(Item.Properties properties) {
+        super(properties);
+    }
+
+    public static MeteorKind getKind(ItemStack itemStack) {
+        CompoundTag compoundTag = ((CustomData)itemStack.getOrDefault(DataComponents.CUSTOM_DATA, (Object)CustomData.EMPTY)).copyTag();
+        return compoundTag.contains(KEY) ? MeteorKind.byIndex(compoundTag.getInt(KEY)) : MeteorKind.RANDOM;
+    }
+
+    public static void setKind(ItemStack itemStack, MeteorKind meteorKind) {
+        CompoundTag compoundTag = ((CustomData)itemStack.getOrDefault(DataComponents.CUSTOM_DATA, (Object)CustomData.EMPTY)).copyTag();
+        compoundTag.putInt(KEY, meteorKind.ordinal());
+        itemStack.set(DataComponents.CUSTOM_DATA, (Object)CustomData.of((CompoundTag)compoundTag));
+    }
+
+    public static void registerCommand(RegisterCommandsEvent registerCommandsEvent) {
+        registerCommandsEvent.getDispatcher().register((LiteralArgumentBuilder)Commands.literal((String)COMMAND).then(Commands.argument((String)"hand", (ArgumentType)IntegerArgumentType.integer((int)0, (int)1)).then(Commands.argument((String)"kind", (ArgumentType)IntegerArgumentType.integer((int)0, (int)63)).executes(commandContext -> {
+            InteractionHand interactionHand;
+            ServerPlayer serverPlayer = ((CommandSourceStack)commandContext.getSource()).getPlayerOrException();
+            ItemStack itemStack = serverPlayer.getItemInHand(interactionHand = IntegerArgumentType.getInteger((CommandContext)commandContext, (String)"hand") == 1 ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+            if (!(itemStack.getItem() instanceof KindRemoteItem)) {
+                return 0;
+            }
+            MeteorKind meteorKind = MeteorKind.byIndex(IntegerArgumentType.getInteger((CommandContext)commandContext, (String)"kind"));
+            KindRemoteItem.setKind(itemStack, meteorKind);
+            serverPlayer.displayClientMessage((Component)Component.translatable((String)"message.coaldust.remote_kind", (Object[])new Object[]{Component.translatable((String)("meteor.coaldust.kind." + meteorKind.id))}), true);
+            return 1;
+        }))));
+    }
+
+    /*
+     * Unable to fully structure code
+     * Could not resolve type clashes
+     */
+    public InteractionResultHolder<ItemStack> use(Level var1_1, Player var2_2, InteractionHand var3_3) {
+        block6: {
+            var4_4 = var2_2.getItemInHand(var3_3);
+            if (var2_2.isShiftKeyDown()) {
+                if (var1_1.isClientSide()) {
+                    KindRemoteScreen.open(var3_3, KindRemoteItem.getKind(var4_4));
+                }
+                return InteractionResultHolder.sidedSuccess((Object)var4_4, (boolean)var1_1.isClientSide());
+            }
+            if (!(var1_1 instanceof ServerLevel)) break block6;
+            var5_5 = (ServerLevel)var1_1;
+            var6_6 = var2_2.pick(160.0, 1.0f, false);
+            if (!(var6_6 instanceof BlockHitResult)) ** GOTO lbl-1000
+            var8_7 /* !! */  = (BlockHitResult)var6_6;
+            if (var6_6.getType() == HitResult.Type.BLOCK) {
+                v0 = var8_7 /* !! */ .getBlockPos().above();
+            } else lbl-1000:
+            // 2 sources
+
+            {
+                v0 = BlockPos.containing((double)var6_6.getLocation().x, (double)var6_6.getLocation().y, (double)var6_6.getLocation().z);
+            }
+            var7_8 = v0;
+            var8_7 /* !! */  = KindRemoteItem.getKind(var4_4);
+            if (var8_7 /* !! */  == MeteorKind.RANDOM) {
+                var9_9 = MeteorKind.values();
+                var8_7 /* !! */  = var9_9[var5_5.getRandom().nextInt(var9_9.length - 1)];
+            }
+            if (MeteorManager.launch(var5_5, var7_8, var8_7 /* !! */ .type, var8_7 /* !! */ .radius(var5_5.getRandom()), var8_7 /* !! */ .variant)) {
+                var2_2.displayClientMessage((Component)Component.translatable((String)"message.coaldust.remote_launch", (Object[])new Object[]{Component.translatable((String)("meteor.coaldust.kind." + var8_7 /* !! */ .id))}), true);
+            }
+        }
+        return InteractionResultHolder.sidedSuccess((Object)var4_4, (boolean)var1_1.isClientSide());
+    }
+
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
+        list.add((Component)Component.translatable((String)"tooltip.coaldust.remote_kind", (Object[])new Object[]{Component.translatable((String)("meteor.coaldust.kind." + KindRemoteItem.getKind((ItemStack)itemStack).id))}).withStyle(ChatFormatting.GOLD));
+        list.add((Component)Component.translatable((String)"tooltip.coaldust.remote_kind_hint").withStyle(ChatFormatting.GRAY));
+    }
+}

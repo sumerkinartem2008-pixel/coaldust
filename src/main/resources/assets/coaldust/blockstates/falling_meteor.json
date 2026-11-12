@@ -1,0 +1,28 @@
+{
+ "variants": {
+  "kind=0": {
+   "model": "coaldust:block/falling_meteor_fire"
+  },
+  "kind=1": {
+   "model": "coaldust:block/falling_meteor_smoke"
+  },
+  "kind=2": {
+   "model": "coaldust:block/falling_meteor_ice"
+  },
+  "kind=3": {
+   "model": "coaldust:block/falling_meteor_living"
+  },
+  "kind=4": {
+   "model": "coaldust:block/falling_meteor_ancient"
+  },
+  "kind=5": {
+   "model": "coaldust:block/falling_meteor_underground"
+  },
+  "kind=6": {
+   "model": "coaldust:block/falling_meteor_ring_ancient"
+  },
+  "kind=7": {
+   "model": "coaldust:block/falling_meteor_ring_soul"
+  }
+ }
+}

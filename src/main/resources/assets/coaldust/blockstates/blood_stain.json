@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "coaldust:block/blood_stain"
+      },
+      {
+        "model": "coaldust:block/blood_stain",
+        "y": 90
+      },
+      {
+        "model": "coaldust:block/blood_stain",
+        "y": 180
+      },
+      {
+        "model": "coaldust:block/blood_stain",
+        "y": 270
+      }
+    ]
+  }
+}

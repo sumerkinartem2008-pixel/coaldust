@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "coaldust:block/ancient_slab"
+    },
+    "type=top": {
+      "model": "coaldust:block/ancient_slab_top"
+    },
+    "type=double": {
+      "model": "coaldust:block/ancient_planks"
+    }
+  }
+}
