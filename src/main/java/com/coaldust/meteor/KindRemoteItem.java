@@ -94,44 +94,32 @@ extends Item {
             return 1;
         }))));
     }
-
-    /*
-     * Unable to fully structure code
-     * Could not resolve type clashes
-     */
-    public InteractionResultHolder<ItemStack> use(Level var1_1, Player var2_2, InteractionHand var3_3) {
-        block6: {
-            var4_4 = var2_2.getItemInHand(var3_3);
-            if (var2_2.isShiftKeyDown()) {
-                if (var1_1.isClientSide()) {
-                    KindRemoteScreen.open(var3_3, KindRemoteItem.getKind(var4_4));
-                }
-                return InteractionResultHolder.sidedSuccess((Object)var4_4, (boolean)var1_1.isClientSide());
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            if (level.isClientSide()) {
+                KindRemoteScreen.open(hand, KindRemoteItem.getKind(stack));
             }
-            if (!(var1_1 instanceof ServerLevel)) break block6;
-            var5_5 = (ServerLevel)var1_1;
-            var6_6 = var2_2.pick(160.0, 1.0f, false);
-            if (!(var6_6 instanceof BlockHitResult)) ** GOTO lbl-1000
-            var8_7 /* !! */  = (BlockHitResult)var6_6;
-            if (var6_6.getType() == HitResult.Type.BLOCK) {
-                v0 = var8_7 /* !! */ .getBlockPos().above();
-            } else lbl-1000:
-            // 2 sources
-
-            {
-                v0 = BlockPos.containing((double)var6_6.getLocation().x, (double)var6_6.getLocation().y, (double)var6_6.getLocation().z);
+            return InteractionResultHolder.sidedSuccess((Object)stack, (boolean)level.isClientSide());
+        }
+        if (level instanceof ServerLevel serverLevel) {
+            HitResult hit = player.pick(160.0, 1.0f, false);
+            BlockPos target;
+            if (hit instanceof BlockHitResult blockHit && hit.getType() == HitResult.Type.BLOCK) {
+                target = blockHit.getBlockPos().above();
+            } else {
+                target = BlockPos.containing(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z);
             }
-            var7_8 = v0;
-            var8_7 /* !! */  = KindRemoteItem.getKind(var4_4);
-            if (var8_7 /* !! */  == MeteorKind.RANDOM) {
-                var9_9 = MeteorKind.values();
-                var8_7 /* !! */  = var9_9[var5_5.getRandom().nextInt(var9_9.length - 1)];
+            MeteorKind kind = KindRemoteItem.getKind(stack);
+            if (kind == MeteorKind.RANDOM) {
+                MeteorKind[] all = MeteorKind.values();
+                kind = all[serverLevel.getRandom().nextInt(all.length - 1)];
             }
-            if (MeteorManager.launch(var5_5, var7_8, var8_7 /* !! */ .type, var8_7 /* !! */ .radius(var5_5.getRandom()), var8_7 /* !! */ .variant)) {
-                var2_2.displayClientMessage((Component)Component.translatable((String)"message.coaldust.remote_launch", (Object[])new Object[]{Component.translatable((String)("meteor.coaldust.kind." + var8_7 /* !! */ .id))}), true);
+            if (MeteorManager.launch(serverLevel, target, kind.type, kind.radius(serverLevel.getRandom()), kind.variant)) {
+                player.displayClientMessage((Component)Component.translatable((String)"message.coaldust.remote_launch", (Object[])new Object[]{Component.translatable((String)("meteor.coaldust.kind." + kind.id))}), true);
             }
         }
-        return InteractionResultHolder.sidedSuccess((Object)var4_4, (boolean)var1_1.isClientSide());
+        return InteractionResultHolder.sidedSuccess((Object)stack, (boolean)level.isClientSide());
     }
 
     public void appendHoverText(ItemStack itemStack, Item.TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {

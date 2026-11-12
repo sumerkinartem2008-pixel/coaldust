@@ -114,13 +114,10 @@ public final class IdeologyItems {
             return this.kind.tier >= 2;
         }
 
-        public ItemStack finishUsingItem(ItemStack itemStack, Level level, LivingEntity livingEntity) {
-            Ideology ideology;
-            ServerPlayer serverPlayer;
-            if (livingEntity instanceof ServerPlayer) {
-                serverPlayer = (ServerPlayer)livingEntity;
+                public ItemStack finishUsingItem(ItemStack itemStack, Level level, LivingEntity livingEntity) {
+            if (livingEntity instanceof ServerPlayer serverPlayer) {
                 if (IdeologyManager.has(serverPlayer, Trait.BLOODEATING)) {
-                    ideology = IdeologyManager.of(serverPlayer);
+                    Ideology ideology = IdeologyManager.of(serverPlayer);
                     this.kind.drinkMember(serverPlayer, ideology.level >= ideology.strongLevel() ? 1 : 0);
                     TraitEffects.markBlood(serverPlayer);
                     IdeologyManager.progress(serverPlayer, Quest.BLOOD_DRINK, 1);
@@ -128,21 +125,17 @@ public final class IdeologyItems {
                     this.kind.drinkStranger(serverPlayer);
                 }
             }
-            if (livingEntity instanceof Player) {
-                serverPlayer = (Player)livingEntity;
-                if (serverPlayer.getAbilities().instabuild) {
-                    return itemStack;
-                }
+            if (livingEntity instanceof Player creative && creative.getAbilities().instabuild) {
+                return itemStack;
             }
             itemStack.shrink(1);
             if (itemStack.isEmpty()) {
                 return new ItemStack((ItemLike)Items.GLASS_BOTTLE);
             }
-            if (livingEntity instanceof Player) {
-                serverPlayer = (Player)livingEntity;
-                ideology = new ItemStack((ItemLike)Items.GLASS_BOTTLE);
-                if (!serverPlayer.getInventory().add((ItemStack)ideology)) {
-                    serverPlayer.drop((ItemStack)ideology, false);
+            if (livingEntity instanceof Player holder) {
+                ItemStack bottle = new ItemStack((ItemLike)Items.GLASS_BOTTLE);
+                if (!holder.getInventory().add(bottle)) {
+                    holder.drop(bottle, false);
                 }
             }
             return itemStack;
@@ -166,9 +159,7 @@ public final class IdeologyItems {
             return this.draw(itemStack, serverPlayer, livingEntity) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
 
-        public boolean draw(ItemStack itemStack, ServerPlayer serverPlayer, LivingEntity livingEntity) {
-            Level level;
-            Mob mob;
+                public boolean draw(ItemStack itemStack, ServerPlayer serverPlayer, LivingEntity livingEntity) {
             if (!IdeologyManager.has(serverPlayer, Trait.BLOODEATING)) {
                 serverPlayer.displayClientMessage((Component)Component.translatable((String)"ideology.coaldust.msg.need_trait", (Object[])new Object[]{Component.translatable((String)"ideology.coaldust.trait.bloodeating")}), true);
                 return false;
@@ -178,18 +169,16 @@ public final class IdeologyItems {
             }
             BloodKind bloodKind = BloodKind.of(livingEntity);
             livingEntity.hurt(serverPlayer.damageSources().playerAttack((Player)serverPlayer), bloodKind.tier >= 2 ? 6.0f : 2.0f);
-            if (livingEntity instanceof Mob) {
-                mob = (Mob)livingEntity;
-                mob.setTarget((LivingEntity)serverPlayer);
+            if (livingEntity instanceof Mob targetMob) {
+                targetMob.setTarget((LivingEntity)serverPlayer);
             }
-            mob = new ItemStack((ItemLike)ModItems.BLOODS.get((Object)bloodKind).get());
-            if (!serverPlayer.getInventory().add((ItemStack)mob)) {
-                serverPlayer.drop((ItemStack)mob, false);
+            ItemStack bloodStack = new ItemStack((ItemLike)ModItems.BLOODS.get((Object)bloodKind).get());
+            if (!serverPlayer.getInventory().add(bloodStack)) {
+                serverPlayer.drop(bloodStack, false);
             }
             serverPlayer.getCooldowns().addCooldown((Item)this, bloodKind.cooldown);
             serverPlayer.level().playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.PLAYER_HURT_SWEET_BERRY_BUSH, SoundSource.PLAYERS, 1.0f, 0.8f);
-            if (bloodKind.tier >= 1 && (level = serverPlayer.level()) instanceof ServerLevel) {
-                ServerLevel serverLevel = (ServerLevel)level;
+            if (bloodKind.tier >= 1 && serverPlayer.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles((ParticleOptions)ParticleTypes.DAMAGE_INDICATOR, livingEntity.getX(), livingEntity.getY() + (double)livingEntity.getBbHeight() * 0.6, livingEntity.getZ(), 6 * bloodKind.tier, 0.3, 0.3, 0.3, 0.1);
             }
             IdeologyManager.progress(serverPlayer, Quest.BLOOD_COLLECT, 1);

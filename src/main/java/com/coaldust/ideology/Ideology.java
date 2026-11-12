@@ -143,7 +143,7 @@ public class Ideology {
         }
         compoundTag.putString("invites", stringBuilder3.toString());
         StringBuilder stringBuilder4 = new StringBuilder();
-        this.progress.forEach((quest, n) -> stringBuilder3.append(quest.id()).append('=').append(n).append(';'));
+        this.progress.forEach((quest, n) -> stringBuilder4.append(quest.id()).append('=').append(n).append(';'));
         compoundTag.putString("progress", stringBuilder4.toString());
         StringBuilder stringBuilder5 = new StringBuilder();
         this.active.forEach((trait, quest) -> stringBuilder5.append(trait.id).append('=').append(quest.id()).append(';'));
@@ -159,7 +159,7 @@ public class Ideology {
         compoundTag.putInt("color", this.color);
         compoundTag.putString("icon", this.icon);
         StringBuilder stringBuilder7 = new StringBuilder();
-        this.requests.forEach((uUID, string) -> stringBuilder5.append(uUID).append('=').append(string.replace(";", "")).append(';'));
+        this.requests.forEach((uUID, string) -> stringBuilder7.append(uUID).append('=').append(string.replace(";", "")).append(';'));
         compoundTag.putString("requests", stringBuilder7.toString());
         return compoundTag;
     }

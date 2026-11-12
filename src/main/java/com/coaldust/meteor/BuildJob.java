@@ -123,7 +123,7 @@ public final class BuildJob {
         }
         BlockPos blockPos = this.origin.offset(n - 4, n2 - 4, n3 - 4);
         BlockPos blockPos3 = this.origin.offset(n4 + 4, n5 + 24, n6 + 4);
-        List list = this.level.getEntitiesOfClass(FallingBlockEntity.class, new AABB((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), (double)(blockPos3.getX() + 1), (double)(blockPos3.getY() + 1), (double)(blockPos3.getZ() + 1)));
+        List<FallingBlockEntity> list = this.level.getEntitiesOfClass(FallingBlockEntity.class, new AABB((double)blockPos.getX(), (double)blockPos.getY(), (double)blockPos.getZ(), (double)(blockPos3.getX() + 1), (double)(blockPos3.getY() + 1), (double)(blockPos3.getZ() + 1)));
         if (list != null) {
             for (FallingBlockEntity fallingBlockEntity : list) {
                 fallingBlockEntity.discard();
@@ -144,15 +144,13 @@ public final class BuildJob {
         return Blocks.COBBLED_DEEPSLATE.defaultBlockState();
     }
 
-    public boolean tick() {
-        BlockState blockState;
-        Object object;
-        int n = Math.min(this.keys.length, this.index + 6000);
-        while (this.index < n) {
-            long l = this.keys[this.index];
-            object = this.origin.offset(UndergroundCity.Plan.kx(l), UndergroundCity.Plan.ky(l), UndergroundCity.Plan.kz(l));
-            if (this.level.isLoaded(object) && !(blockState = this.level.getBlockState(object)).is(Blocks.BEDROCK) && (this.level.getBlockEntity(object) == null || this.states[this.index].is(Blocks.CHEST))) {
-                this.level.setBlock(object, this.states[this.index], 18);
+        public boolean tick() {
+        int end = Math.min(this.keys.length, this.index + 6000);
+        while (this.index < end) {
+            long key = this.keys[this.index];
+            BlockPos pos = this.origin.offset(UndergroundCity.Plan.kx(key), UndergroundCity.Plan.ky(key), UndergroundCity.Plan.kz(key));
+            if (this.level.isLoaded(pos) && !this.level.getBlockState(pos).is(Blocks.BEDROCK) && (this.level.getBlockEntity(pos) == null || this.states[this.index].is(Blocks.CHEST))) {
+                this.level.setBlock(pos, this.states[this.index], 18);
             }
             ++this.index;
         }
@@ -163,12 +161,11 @@ public final class BuildJob {
         this.cleanFalling();
         AncientLoot.Pools pools = AncientLoot.Pools.collect();
         for (int i = 0; i < this.plan.chests.size(); ++i) {
-            object = this.plan.chests.get(i);
-            blockState = this.origin.offset((int)object[0], (int)object[1], (int)object[2]);
-            BlockEntity blockEntity = this.level.getBlockEntity((BlockPos)blockState);
-            if (!(blockEntity instanceof ChestBlockEntity)) continue;
-            ChestBlockEntity chestBlockEntity = (ChestBlockEntity)blockEntity;
-            AncientLoot.fill(chestBlockEntity, this.level.getRandom(), pools, this.plan.richChests.get(i));
+            var chest = this.plan.chests.get(i);
+            BlockPos chestPos = this.origin.offset((int)chest[0], (int)chest[1], (int)chest[2]);
+            BlockEntity blockEntity = this.level.getBlockEntity(chestPos);
+            if (!(blockEntity instanceof ChestBlockEntity chestEntity)) continue;
+            AncientLoot.fill(chestEntity, this.level.getRandom(), pools, this.plan.richChests.get(i));
         }
         return true;
     }

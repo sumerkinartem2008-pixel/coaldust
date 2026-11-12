@@ -90,45 +90,34 @@ extends Item {
         }))));
     }
 
-    /*
-     * Unable to fully structure code
-     * Could not resolve type clashes
-     */
-    public InteractionResultHolder<ItemStack> use(Level var1_1, Player var2_2, InteractionHand var3_3) {
-        block5: {
-            var4_4 = var2_2.getItemInHand(var3_3);
-            if (var2_2.isShiftKeyDown()) {
-                if (var1_1.isClientSide()) {
-                    RemoteScreen.open(var3_3, MeteorRemoteItem.getSize(var4_4));
-                }
-                return InteractionResultHolder.sidedSuccess((Object)var4_4, (boolean)var1_1.isClientSide());
+        public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            if (level.isClientSide()) {
+                RemoteScreen.open(hand, MeteorRemoteItem.getSize(stack));
             }
-            if (!(var1_1 instanceof ServerLevel)) break block5;
-            var5_5 = (ServerLevel)var1_1;
-            var6_6 = var2_2.pick(160.0, 1.0f, false);
-            if (!(var6_6 instanceof BlockHitResult)) ** GOTO lbl-1000
-            var8_7 /* !! */  = (BlockHitResult)var6_6;
-            if (var6_6.getType() == HitResult.Type.BLOCK) {
-                v0 = var8_7 /* !! */ .getBlockPos().above();
-            } else lbl-1000:
-            // 2 sources
-
-            {
-                v0 = BlockPos.containing((double)var6_6.getLocation().x, (double)var6_6.getLocation().y, (double)var6_6.getLocation().z);
-            }
-            var7_8 = v0;
-            var8_7 /* !! */  = MeteorRemoteItem.getSize(var4_4);
-            var9_9 = this.type != null ? this.type : MeteorType.resourceFor((MeteorType.Size)var8_7 /* !! */ , var5_5.getRandom());
-            var10_10 = var9_9.rollRadius(var5_5.getRandom(), (MeteorType.Size)var8_7 /* !! */ );
-            var12_11 = -1;
-            if (var9_9 == MeteorType.UNDERGROUND) {
-                var13_12 /* !! */  = var8_7 /* !! */  == MeteorType.Size.RANDOM ? MeteorType.Size.rollNatural(var5_5.getRandom()) : var8_7 /* !! */ ;
-                var12_11 = var13_12 /* !! */  == MeteorType.Size.TITANIC ? UndergroundCity.rollBig(var5_5.getRandom()) : UndergroundCity.rollVariant(var5_5.getRandom(), false);
-                var10_10 = UndergroundCity.radiusFor(var12_11);
-            }
-            MeteorManager.launch(var5_5, var7_8, var9_9, var10_10, var12_11);
+            return InteractionResultHolder.sidedSuccess((Object)stack, (boolean)level.isClientSide());
         }
-        return InteractionResultHolder.sidedSuccess((Object)var4_4, (boolean)var1_1.isClientSide());
+        if (level instanceof ServerLevel serverLevel) {
+            HitResult hit = player.pick(160.0, 1.0f, false);
+            BlockPos target;
+            if (hit instanceof BlockHitResult blockHit && hit.getType() == HitResult.Type.BLOCK) {
+                target = blockHit.getBlockPos().above();
+            } else {
+                target = BlockPos.containing(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z);
+            }
+            MeteorType.Size size = MeteorRemoteItem.getSize(stack);
+            MeteorType meteorType = this.type != null ? this.type : MeteorType.resourceFor(size, serverLevel.getRandom());
+            double radius = meteorType.rollRadius(serverLevel.getRandom(), size);
+            int variant = -1;
+            if (meteorType == MeteorType.UNDERGROUND) {
+                MeteorType.Size natural = size == MeteorType.Size.RANDOM ? MeteorType.Size.rollNatural(serverLevel.getRandom()) : size;
+                variant = natural == MeteorType.Size.TITANIC ? UndergroundCity.rollBig(serverLevel.getRandom()) : UndergroundCity.rollVariant(serverLevel.getRandom(), false);
+                radius = UndergroundCity.radiusFor(variant);
+            }
+            MeteorManager.launch(serverLevel, target, meteorType, radius, variant);
+        }
+        return InteractionResultHolder.sidedSuccess((Object)stack, (boolean)level.isClientSide());
     }
 
     public void appendHoverText(ItemStack itemStack, Item.TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
