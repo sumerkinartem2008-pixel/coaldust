@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "coaldust:item/meteor_remote_ice"
+  }
+}

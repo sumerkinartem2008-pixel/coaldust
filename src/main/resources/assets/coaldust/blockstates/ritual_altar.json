@@ -1,0 +1,58 @@
+{
+ "variants": {
+  "px=0,py=0,pz=0": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=0,py=0,pz=1": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=0,py=0,pz=2": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=0,py=1,pz=0": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=0,py=1,pz=1": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=0,py=1,pz=2": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=1,py=0,pz=0": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=1,py=0,pz=1": {
+   "model": "coaldust:block/ritual_altar"
+  },
+  "px=1,py=0,pz=2": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=1,py=1,pz=0": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=1,py=1,pz=1": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=1,py=1,pz=2": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=2,py=0,pz=0": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=2,py=0,pz=1": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=2,py=0,pz=2": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=2,py=1,pz=0": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=2,py=1,pz=1": {
+   "model": "coaldust:block/ritual_altar_part"
+  },
+  "px=2,py=1,pz=2": {
+   "model": "coaldust:block/ritual_altar_part"
+  }
+ }
+}

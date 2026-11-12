@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "planks",
+  "ingredients": [
+    {
+      "item": "coaldust:ancient_log"
+    }
+  ],
+  "result": {
+    "id": "coaldust:ancient_planks",
+    "count": 4
+  }
+}
